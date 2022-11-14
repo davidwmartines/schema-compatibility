@@ -1,5 +1,3 @@
-from confluent_kafka.schema_registry import Schema
-
 from .base import SchemaTester
 
 base_schema = """
