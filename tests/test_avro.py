@@ -117,6 +117,12 @@ class TestBackwardsComatibility(SchemaTester):
     def test_add_field_without_default(self):
         assert self.not_compatible(base_schema, schema_add_field_without_default)
 
+    def test_delete_field_with_default(self):
+        assert self.is_compatible(schema_add_field_with_default, base_schema)
+
+    def test_delete_field_without_default(self):
+        assert self.is_compatible(schema_add_field_without_default, base_schema)
+
     def test_rename_field_with_alias(self):
         assert self.is_compatible(base_schema, schema_rename_field_with_alias)
 
@@ -156,6 +162,12 @@ class TestForwardsCompatibility(SchemaTester):
     def test_add_field_without_default(self):
         assert self.is_compatible(base_schema, schema_add_field_without_default)
 
+    def test_delete_field_with_default(self):
+        assert self.is_compatible(schema_add_field_with_default, base_schema)
+
+    def test_delete_field_without_default(self):
+        assert self.not_compatible(schema_add_field_without_default, base_schema)
+
     def test_rename_field_with_alias(self):
         assert self.not_compatible(base_schema, schema_rename_field_with_alias)
 
@@ -190,6 +202,12 @@ class TestFullCompatibility(SchemaTester):
 
     def test_add_field_without_default(self):
         assert self.not_compatible(base_schema, schema_add_field_without_default)
+
+    def test_delete_field_with_default(self):
+        assert self.is_compatible(schema_add_field_with_default, base_schema)
+
+    def test_delete_field_without_default(self):
+        assert self.not_compatible(schema_add_field_without_default, base_schema)
 
     def test_rename_field_with_alias(self):
         assert self.not_compatible(base_schema, schema_rename_field_with_alias)
