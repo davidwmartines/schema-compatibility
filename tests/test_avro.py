@@ -111,11 +111,11 @@ class TestBackwardsComatibility(SchemaTester):
         super().setup_class()
         cls.client.set_compatibility(level="backward")
 
+    ###############
+    # allowed
+    ###############
     def test_add_field_with_default(self):
         assert self.is_compatible(base_schema, schema_add_field_with_default)
-
-    def test_add_field_without_default(self):
-        assert self.not_compatible(base_schema, schema_add_field_without_default)
 
     def test_delete_field_with_default(self):
         assert self.is_compatible(schema_add_field_with_default, base_schema)
@@ -129,14 +129,20 @@ class TestBackwardsComatibility(SchemaTester):
     def test_field_evolved_to_union(self):
         assert self.is_compatible(base_schema, schema_field_evolved_to_union)
 
-    def test_remove_type_from_union(self):
-        assert self.not_compatible(
-            schema_field_add_type_to_union, schema_field_evolved_to_union
-        )
-
     def test_add_type_to_union(self):
         assert self.is_compatible(
             schema_field_evolved_to_union, schema_field_add_type_to_union
+        )
+
+    ###############
+    # not allowed
+    ###############
+    def test_add_field_without_default(self):
+        assert self.not_compatible(base_schema, schema_add_field_without_default)
+
+    def test_remove_type_from_union(self):
+        assert self.not_compatible(
+            schema_field_add_type_to_union, schema_field_evolved_to_union
         )
 
     def test_field_evolved_from_union(self):
@@ -156,6 +162,9 @@ class TestForwardsCompatibility(SchemaTester):
         super().setup_class()
         cls.client.set_compatibility(level="forward")
 
+    ###############
+    # allowed
+    ###############
     def test_add_field_with_default(self):
         assert self.is_compatible(base_schema, schema_add_field_with_default)
 
@@ -165,6 +174,17 @@ class TestForwardsCompatibility(SchemaTester):
     def test_delete_field_with_default(self):
         assert self.is_compatible(schema_add_field_with_default, base_schema)
 
+    def test_field_evolved_from_union(self):
+        assert self.is_compatible(schema_field_evolved_to_union, base_schema)
+
+    def test_remove_type_from_union(self):
+        assert self.is_compatible(
+            schema_field_add_type_to_union, schema_field_evolved_to_union
+        )
+
+    ###############
+    # not allowed
+    ###############
     def test_delete_field_without_default(self):
         assert self.not_compatible(schema_add_field_without_default, base_schema)
 
@@ -174,18 +194,10 @@ class TestForwardsCompatibility(SchemaTester):
     def test_field_evolved_to_union(self):
         assert self.not_compatible(base_schema, schema_field_evolved_to_union)
 
-    def test_remove_type_from_union(self):
-        assert self.is_compatible(
-            schema_field_add_type_to_union, schema_field_evolved_to_union
-        )
-
     def test_add_type_to_union(self):
         assert self.not_compatible(
             schema_field_evolved_to_union, schema_field_add_type_to_union
         )
-
-    def test_field_evolved_from_union(self):
-        assert self.is_compatible(schema_field_evolved_to_union, base_schema)
 
 
 class TestFullCompatibility(SchemaTester):
@@ -197,14 +209,20 @@ class TestFullCompatibility(SchemaTester):
         super().setup_class()
         cls.client.set_compatibility(level="full")
 
+    ###############
+    # allowed
+    ###############
     def test_add_field_with_default(self):
         assert self.is_compatible(base_schema, schema_add_field_with_default)
 
-    def test_add_field_without_default(self):
-        assert self.not_compatible(base_schema, schema_add_field_without_default)
-
     def test_delete_field_with_default(self):
         assert self.is_compatible(schema_add_field_with_default, base_schema)
+
+    ###############
+    # not allowed
+    ###############
+    def test_add_field_without_default(self):
+        assert self.not_compatible(base_schema, schema_add_field_without_default)
 
     def test_delete_field_without_default(self):
         assert self.not_compatible(schema_add_field_without_default, base_schema)
