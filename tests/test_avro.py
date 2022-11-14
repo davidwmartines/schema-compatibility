@@ -1,6 +1,8 @@
-from .base import SchemaTester
 from uuid import uuid4
+
 from confluent_kafka.schema_registry import Schema
+
+from .base import SchemaTester
 
 SCHEMA_TYPE = "AVRO"
 
@@ -131,33 +133,30 @@ class TestBackwardsComatibility(SchemaTester):
         super().setup_class()
         cls.client.set_compatibility(level="backward")
 
-    def test_add_field_with_default(self, subject):
-        self.client.register_schema(subject, base_schema)
-        assert self.is_compatible(subject, schema_add_field_with_default)
+    def test_add_field_with_default(self):
+        assert self.is_compatible(base_schema, schema_add_field_with_default)
 
-    def test_add_field_without_default(self, subject):
-        self.client.register_schema(subject, base_schema)
-        assert self.not_compatible(subject, schema_add_field_without_default)
+    def test_add_field_without_default(self):
+        assert self.not_compatible(base_schema, schema_add_field_without_default)
 
-    def test_rename_field_with_alias(self, subject):
-        self.client.register_schema(subject, base_schema)
-        assert self.is_compatible(subject, schema_rename_field_with_alias)
+    def test_rename_field_with_alias(self):
+        assert self.is_compatible(base_schema, schema_rename_field_with_alias)
 
-    def test_field_evolved_to_union(self, subject):
-        self.client.register_schema(subject, base_schema)
-        assert self.is_compatible(subject, schema_field_evolved_to_union)
+    def test_field_evolved_to_union(self):
+        assert self.is_compatible(base_schema, schema_field_evolved_to_union)
 
-    def test_remove_type_from_union(self, subject):
-        self.client.register_schema(subject, schema_field_add_type_to_union)
-        assert self.not_compatible(subject, schema_field_evolved_to_union)
+    def test_remove_type_from_union(self):
+        assert self.not_compatible(
+            schema_field_add_type_to_union, schema_field_evolved_to_union
+        )
 
-    def test_add_type_to_union(self, subject):
-        self.client.register_schema(subject, schema_field_evolved_to_union)
-        assert self.is_compatible(subject, schema_field_add_type_to_union)
+    def test_add_type_to_union(self):
+        assert self.is_compatible(
+            schema_field_evolved_to_union, schema_field_add_type_to_union
+        )
 
-    def test_field_evolved_from_union(self, subject):
-        self.client.register_schema(subject, schema_field_evolved_to_union)
-        assert self.not_compatible(subject, base_schema)
+    def test_field_evolved_from_union(self):
+        assert self.not_compatible(schema_field_evolved_to_union, base_schema)
 
 
 class TestForwardsCompatibility(SchemaTester):
@@ -171,30 +170,27 @@ class TestForwardsCompatibility(SchemaTester):
         super().setup_class()
         cls.client.set_compatibility(level="forward")
 
-    def test_add_field_with_default(self, subject):
-        self.client.register_schema(subject, base_schema)
-        assert self.is_compatible(subject, schema_add_field_with_default)
+    def test_add_field_with_default(self):
+        assert self.is_compatible(base_schema, schema_add_field_with_default)
 
-    def test_add_field_without_default(self, subject):
-        self.client.register_schema(subject, base_schema)
-        assert self.is_compatible(subject, schema_add_field_without_default)
+    def test_add_field_without_default(self):
+        assert self.is_compatible(base_schema, schema_add_field_without_default)
 
-    def test_rename_field_with_alias(self, subject):
-        self.client.register_schema(subject, base_schema)
-        assert self.not_compatible(subject, schema_rename_field_with_alias)
+    def test_rename_field_with_alias(self):
+        assert self.not_compatible(base_schema, schema_rename_field_with_alias)
 
-    def test_field_evolved_to_union(self, subject):
-        self.client.register_schema(subject, base_schema)
-        assert self.not_compatible(subject, schema_field_evolved_to_union)
+    def test_field_evolved_to_union(self):
+        assert self.not_compatible(base_schema, schema_field_evolved_to_union)
 
-    def test_remove_type_from_union(self, subject):
-        self.client.register_schema(subject, schema_field_add_type_to_union)
-        assert self.is_compatible(subject, schema_field_evolved_to_union)
+    def test_remove_type_from_union(self):
+        assert self.is_compatible(
+            schema_field_add_type_to_union, schema_field_evolved_to_union
+        )
 
-    def test_add_type_to_union(self, subject):
-        self.client.register_schema(subject, schema_field_evolved_to_union)
-        assert self.not_compatible(subject, schema_field_add_type_to_union)
+    def test_add_type_to_union(self):
+        assert self.not_compatible(
+            schema_field_evolved_to_union, schema_field_add_type_to_union
+        )
 
-    def test_field_evolved_from_union(self, subject):
-        self.client.register_schema(subject, schema_field_evolved_to_union)
-        assert self.is_compatible(subject, base_schema)
+    def test_field_evolved_from_union(self):
+        assert self.is_compatible(schema_field_evolved_to_union, base_schema)
