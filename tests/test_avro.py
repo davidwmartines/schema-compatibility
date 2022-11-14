@@ -1,13 +1,8 @@
-from uuid import uuid4
-
 from confluent_kafka.schema_registry import Schema
 
 from .base import SchemaTester
 
-SCHEMA_TYPE = "AVRO"
-
-base_schema = Schema(
-    schema_str="""
+base_schema = """
 {
   "namespace": "test",
   "name": "myrecord",
@@ -19,12 +14,9 @@ base_schema = Schema(
     }
   ]
 }
-""",
-    schema_type=SCHEMA_TYPE,
-)
+"""
 
-schema_add_field_with_default = Schema(
-    schema_str="""
+schema_add_field_with_default = """
 {
   "namespace": "test",
   "name": "myrecord",
@@ -41,13 +33,10 @@ schema_add_field_with_default = Schema(
     }
   ]
 }
-""",
-    schema_type=SCHEMA_TYPE,
-)
+"""
 
 
-schema_add_field_without_default = Schema(
-    schema_str="""
+schema_add_field_without_default = """
 {
   "namespace": "test",
   "name": "myrecord",
@@ -63,13 +52,10 @@ schema_add_field_without_default = Schema(
     }
   ]
 }
-""",
-    schema_type=SCHEMA_TYPE,
-)
+"""
 
 
-schema_rename_field_with_alias = Schema(
-    schema_str="""
+schema_rename_field_with_alias = """
 {
   "namespace": "test",
   "name": "myrecord",
@@ -82,13 +68,10 @@ schema_rename_field_with_alias = Schema(
     }
   ]
 }
-""",
-    schema_type=SCHEMA_TYPE,
-)
+"""
 
 
-schema_field_evolved_to_union = Schema(
-    schema_str="""
+schema_field_evolved_to_union = """
 {
   "namespace": "test",
   "name": "myrecord",
@@ -100,12 +83,9 @@ schema_field_evolved_to_union = Schema(
     }
   ]
 }
-""",
-    schema_type=SCHEMA_TYPE,
-)
+"""
 
-schema_field_add_type_to_union = Schema(
-    schema_str="""
+schema_field_add_type_to_union = """
 {
   "namespace": "test",
   "name": "myrecord",
@@ -117,9 +97,7 @@ schema_field_add_type_to_union = Schema(
     }
   ]
 }
-""",
-    schema_type=SCHEMA_TYPE,
-)
+"""
 
 
 class TestBackwardsComatibility(SchemaTester):
@@ -127,6 +105,8 @@ class TestBackwardsComatibility(SchemaTester):
     Backward compatibility: A new schema is backward compatible if it can be used to
     read the data written in the previous schema.
     """
+
+    schema_type = "AVRO"
 
     @classmethod
     def setup_class(cls):
@@ -164,6 +144,8 @@ class TestForwardsCompatibility(SchemaTester):
     Forward compatibility: A new schema is forward compatible if the previous schema can
     read data written in this schema.
     """
+
+    schema_type = "AVRO"
 
     @classmethod
     def setup_class(cls):
