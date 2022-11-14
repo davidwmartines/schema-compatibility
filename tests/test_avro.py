@@ -33,6 +33,43 @@ schema_add_field_with_default = """
 }
 """
 
+schema_add_nullable_field = """
+{
+  "namespace": "test",
+  "name": "myrecord",
+  "type": "record",
+  "fields": [
+    {
+      "name": "f1",
+      "type": "string"
+    },
+    {
+      "name": "f2",
+      "type": ["null", "string"]
+    }
+  ]
+}
+"""
+
+schema_add_nullable_field_with_default = """
+{
+  "namespace": "test",
+  "name": "myrecord",
+  "type": "record",
+  "fields": [
+    {
+      "name": "f1",
+      "type": "string"
+    },
+    {
+      "name": "f2",
+      "type": ["null", "string"],
+      "default": "null"
+    }
+  ]
+}
+"""
+
 
 schema_add_field_without_default = """
 {
@@ -117,11 +154,17 @@ class TestBackwardsComatibility(SchemaTester):
     def test_add_field_with_default(self):
         assert self.is_compatible(base_schema, schema_add_field_with_default)
 
+    def test_add_nullable_field_with_default(self):
+        assert self.is_compatible(base_schema, schema_add_nullable_field_with_default)
+
     def test_delete_field_with_default(self):
         assert self.is_compatible(schema_add_field_with_default, base_schema)
 
     def test_delete_field_without_default(self):
         assert self.is_compatible(schema_add_field_without_default, base_schema)
+
+    def test_delete_nullable_field(self):
+        assert self.is_compatible(schema_add_nullable_field, base_schema)
 
     def test_rename_field_with_alias(self):
         assert self.is_compatible(base_schema, schema_rename_field_with_alias)
@@ -137,6 +180,9 @@ class TestBackwardsComatibility(SchemaTester):
     ###############
     # not allowed
     ###############
+    def test_add_nullable_field(self):
+        assert self.not_compatible(base_schema, schema_add_nullable_field)
+
     def test_add_field_without_default(self):
         assert self.not_compatible(base_schema, schema_add_field_without_default)
 
