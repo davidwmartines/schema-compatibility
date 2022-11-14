@@ -176,3 +176,38 @@ class TestForwardsCompatibility(SchemaTester):
 
     def test_field_evolved_from_union(self):
         assert self.is_compatible(schema_field_evolved_to_union, base_schema)
+
+
+class TestFullCompatibility(SchemaTester):
+
+    schema_type: str = "AVRO"
+
+    @classmethod
+    def setup_class(cls):
+        super().setup_class()
+        cls.client.set_compatibility(level="full")
+
+    def test_add_field_with_default(self):
+        assert self.is_compatible(base_schema, schema_add_field_with_default)
+
+    def test_add_field_without_default(self):
+        assert self.not_compatible(base_schema, schema_add_field_without_default)
+
+    def test_rename_field_with_alias(self):
+        assert self.not_compatible(base_schema, schema_rename_field_with_alias)
+
+    def test_field_evolved_to_union(self):
+        assert self.not_compatible(base_schema, schema_field_evolved_to_union)
+
+    def test_remove_type_from_union(self):
+        assert self.not_compatible(
+            schema_field_add_type_to_union, schema_field_evolved_to_union
+        )
+
+    def test_add_type_to_union(self):
+        assert self.not_compatible(
+            schema_field_evolved_to_union, schema_field_add_type_to_union
+        )
+
+    def test_field_evolved_from_union(self):
+        assert self.not_compatible(schema_field_evolved_to_union, base_schema)
