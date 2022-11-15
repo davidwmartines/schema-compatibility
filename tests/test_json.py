@@ -80,10 +80,48 @@ schema_closed_add_required_field = """
 """
 
 
-class TestBackwardsComatibility(SchemaTester):
+class TestBackwardsComatibility_Open(SchemaTester):
     """
-    Backward compatibility: A new schema is backward compatible if it can be used to
-    read the data written in the previous schema.
+    Tests for backwards compatibility with open content model schemas.
+    """
+
+    schema_type = "JSON"
+
+    @classmethod
+    def setup_class(cls):
+        super().setup_class()
+        cls.client.set_compatibility(level="backward")
+
+    ###############
+    # allowed
+    ###############
+    def test_open_delete_optional_field(self):
+        assert self.is_compatible(schema_add_optional_field, schema_base)
+
+    def test_open_delete_required_field(self):
+        assert self.is_compatible(schema_add_required_field, schema_base)
+
+    ###############
+    # not allowed
+    ###############
+
+    # this should be allowed (Add Optional Field)
+    def test_open_add_optional_field(self):
+        assert self.not_compatible(schema_base, schema_add_optional_field)
+
+    def test_open_add_required_field(self):
+        assert self.not_compatible(schema_base, schema_add_required_field)
+
+    def test_open_add_optional_field_closed(self):
+        assert self.not_compatible(schema_base, schema_closed_add_optional_field)
+
+    def test_open_add_required_field_closed(self):
+        assert self.not_compatible(schema_closed_base, schema_closed_add_required_field)
+
+
+class TestBackwardsComatibility_Closed(SchemaTester):
+    """
+    Tests for backwards compatibility with closed content model schemas.
     """
 
     schema_type = "JSON"
@@ -101,15 +139,9 @@ class TestBackwardsComatibility(SchemaTester):
 
     def test_closed_add_optional_field_open(self):
         assert self.is_compatible(schema_closed_base, schema_add_optional_field)
-
+    
     def test_closed_make_field_optional(self):
         assert self.is_compatible(schema_closed_base, schema_closed_make_field_optional)
-
-    def test_open_delete_optional_field(self):
-        assert self.is_compatible(schema_add_optional_field, schema_base)
-
-    def test_open_delete_required_field(self):
-        assert self.is_compatible(schema_add_required_field, schema_base)
 
     def test_closed_delete_optional_field_open(self):
         assert self.is_compatible(schema_closed_add_optional_field, schema_base)
@@ -120,19 +152,16 @@ class TestBackwardsComatibility(SchemaTester):
     ###############
     # not allowed
     ###############
+
+    # this should be allowed (delete optional field)
+    def test_closed_delete_optional_field(self):
+        assert self.not_compatible(schema_closed_add_optional_field, schema_closed_base)
+
+    # this should be allowed (delete required field)
+    def test_closed_delete_required_field(self):
+        assert self.not_compatible(schema_closed_add_required_field, schema_closed_base)
+
     def test_closed_add_required_field(self):
-        assert self.not_compatible(schema_closed_base, schema_closed_add_required_field)
-
-    def test_open_add_optional_field(self):
-        assert self.not_compatible(schema_base, schema_add_optional_field)
-
-    def test_open_add_required_field(self):
-        assert self.not_compatible(schema_base, schema_add_required_field)
-
-    def test_open_add_optional_field_closed(self):
-        assert self.not_compatible(schema_base, schema_closed_add_optional_field)
-
-    def test_open_add_required_field_closed(self):
         assert self.not_compatible(schema_closed_base, schema_closed_add_required_field)
 
     def test_closed_make_field_required(self):
@@ -140,19 +169,11 @@ class TestBackwardsComatibility(SchemaTester):
             schema_closed_make_field_optional, schema_closed_base
         )
 
-    # this should be allowed?
-    def test_closed_delete_optional_field(self):
-        assert self.not_compatible(schema_closed_add_optional_field, schema_closed_base)
+   
 
-    # this should be allowed?
-    def test_closed_delete_required_field(self):
-        assert self.not_compatible(schema_closed_add_required_field, schema_closed_base)
-
-
-class TestForwardsCompatibility(SchemaTester):
+class TestForwardsCompatibility_Open(SchemaTester):
     """
-    Forward compatibility: A new schema is forward compatible if the previous schema can
-    read data written in this schema.
+    Tests for forwards compatibility with open content model schemas.
     """
 
     schema_type = "JSON"
@@ -174,14 +195,123 @@ class TestForwardsCompatibility(SchemaTester):
     ###############
     # not allowed
     ###############
+
+    def test_open_delete_required_field(self):
+        assert self.not_compatible(schema_add_required_field, schema_base)
+
+
+
+
+class TestForwardsCompatibility_Closed(SchemaTester):
+    """
+    Tests for forwards compatibility with closed content model schemas.
+    """
+
+    schema_type = "JSON"
+
+    @classmethod
+    def setup_class(cls):
+        super().setup_class()
+        cls.client.set_compatibility(level="forward")
+
+    ###############
+    # allowed
+    ###############
+   
+    ###############
+    # not allowed
+    ###############
     def test_closed_add_required_field(self):
         assert self.not_compatible(schema_closed_base, schema_closed_add_required_field)
 
     def test_closed_add_optional_field_open(self):
         assert self.not_compatible(schema_closed_base, schema_add_optional_field)
 
+    def test_closed_delete_required_field(self):
+        assert self.not_compatible(schema_closed_add_required_field, schema_closed_base)
+
+
+class TestFullCompatibility_Open(SchemaTester):
+    """
+    Tests for full compatibility with open content model schemas.
+    """
+
+    schema_type = "JSON"
+
+    @classmethod
+    def setup_class(cls):
+        super().setup_class()
+        cls.client.set_compatibility(level="forward")
+
+    ###############
+    # allowed
+    ###############
+    def test_open_add_optional_field(self):
+        assert self.is_compatible(schema_base, schema_add_optional_field)
+
+    def test_open_add_required_field(self):
+        assert self.is_compatible(schema_base, schema_add_required_field)
+
+    def test_open_add_optional_field_closed(self):
+        assert self.is_compatible(schema_base, schema_closed_add_optional_field)
+
+    ###############
+    # not allowed
+    ###############
+   
+    def test_open_add_required_field_closed(self):
+        assert self.not_compatible(schema_closed_base, schema_closed_add_required_field)
+
+    def test_open_delete_optional_field(self):
+        assert self.not_compatible(schema_add_optional_field, schema_base)
+
     def test_open_delete_required_field(self):
         assert self.not_compatible(schema_add_required_field, schema_base)
 
+
+class TestFullCompatibility_Closed(SchemaTester):
+    """
+    Tests for Full compatibility with closed content model schemas.
+    """
+
+    schema_type = "JSON"
+
+    @classmethod
+    def setup_class(cls):
+        super().setup_class()
+        cls.client.set_compatibility(level="forward")
+
+    ###############
+    # allowed
+    ###############
+    def test_closed_make_field_required(self):
+        assert self.is_compatible(schema_closed_make_field_optional, schema_closed_base)
+
+    def test_closed_delete_optional_field(self):
+        assert self.is_compatible(schema_closed_add_optional_field, schema_closed_base)
+
+    ###############
+    # not allowed
+    ###############
+    def test_closed_add_required_field(self):
+        assert self.not_compatible(schema_closed_base, schema_closed_add_required_field)
+
     def test_closed_delete_required_field(self):
         assert self.not_compatible(schema_closed_add_required_field, schema_closed_base)
+
+    def test_closed_add_optional_field(self):
+        assert self.not_compatible(schema_closed_base, schema_closed_add_optional_field)
+
+    def test_closed_add_optional_field_open(self):
+        assert self.not_compatible(schema_closed_base, schema_add_optional_field)
+
+    def test_closed_make_field_optional(self):
+        assert self.not_compatible(
+            schema_closed_base, schema_closed_make_field_optional
+        )
+
+    def test_closed_delete_optional_field_open(self):
+        assert self.not_compatible(schema_closed_add_optional_field, schema_base)
+
+    def test_closed_delete_required_field_open(self):
+        assert self.not_compatible(schema_closed_add_required_field, schema_base)
