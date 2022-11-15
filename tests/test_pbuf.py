@@ -27,10 +27,6 @@ message Example {
 
 
 class TestBackwardsComatibility(SchemaTester):
-    """
-    Backward compatibility: A new schema is backward compatible if it can be used to
-    read the data written in the previous schema.
-    """
 
     schema_type = "PROTOBUF"
 
@@ -53,10 +49,6 @@ class TestBackwardsComatibility(SchemaTester):
 
 
 class TestForwardsComatibility(SchemaTester):
-    """
-    Forward compatibility: A new schema is forward compatible if the previous schema can
-    read data written in this schema.
-    """
 
     schema_type = "PROTOBUF"
 
