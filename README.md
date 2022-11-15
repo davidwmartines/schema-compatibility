@@ -9,7 +9,9 @@ The compatibility types and their rules for schema changes are based on: https:/
 A test suite written in Python using `pytest` assertions is run, inspired by the [Confluent Avro Compatibility Test Suite](https://github.com/confluentinc/schema-registry/blob/master/core/src/test/java/io/confluent/kafka/schemaregistry/avro/AvroCompatibilityTest.java).
 
 ## Purpose
+
 Provide information to help in choosing an appropriate serialization format for use in schema (contract) based systems where producers and consumers need to change independently.
+
 
 ## Schema Evolution
 
@@ -21,14 +23,23 @@ Schemas are evolved from one version to the next by making one or more of the fo
 - Delete an optional field
 - Make a required field optional
 - Make an optional field required
-- Make a previously non-nullable field nullable
-- Make a previously nullable field non-nullable
+- Make a non-nullable field nullable
+- Make a nullable field non-nullable
 
 (Re-naming a field would be considered a combination of removing and adding.)
 
 > Note that the possible changes are limited to the serialization format. For example the `proto3` syntax does not include the ability to specify the `required` field rule or to include default field values (as in the `proto2` syntax).
 
 > For JSON Schema, certain transitions are limited by the content models (open vs. closed) of the schemas.
+
+
+## Compatibility Modes
+
+- **Backwards** A new schema is backward compatible if it can be used to
+  read the data written in the previous schema.
+- **Forwards** A new schema is forward compatible if the previous schema can
+  read data written in this schema.
+- **Full** A new schema is fully compatible if it’s both backward and forward compatible.
 
 ## Tests
 
