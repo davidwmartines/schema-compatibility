@@ -21,8 +21,8 @@ Schemas are evolved from one version to the next by making one or more of the fo
 - Delete an optional field
 - Make a required field optional
 - Make an optional field required
-- Add a default value to a field
-- Remove a default value from a field
+- Make a previously non-nullable field nullable
+- Make a previously nullable field non-nullable
 
 (Re-naming a field would be considered a combination of removing and adding.)
 

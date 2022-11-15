@@ -14,7 +14,7 @@ base_schema = """
 }
 """
 
-schema_add_field_with_default = """
+schema_add_optional_field = """
 {
   "namespace": "test",
   "name": "myrecord",
@@ -31,47 +31,10 @@ schema_add_field_with_default = """
     }
   ]
 }
+
 """
 
-schema_add_nullable_field = """
-{
-  "namespace": "test",
-  "name": "myrecord",
-  "type": "record",
-  "fields": [
-    {
-      "name": "f1",
-      "type": "string"
-    },
-    {
-      "name": "f2",
-      "type": ["null", "string"]
-    }
-  ]
-}
-"""
-
-schema_add_nullable_field_with_default = """
-{
-  "namespace": "test",
-  "name": "myrecord",
-  "type": "record",
-  "fields": [
-    {
-      "name": "f1",
-      "type": "string"
-    },
-    {
-      "name": "f2",
-      "type": ["null", "string"],
-      "default": "null"
-    }
-  ]
-}
-"""
-
-
-schema_add_field_without_default = """
+schema_add_required_field = """
 {
   "namespace": "test",
   "name": "myrecord",
@@ -151,25 +114,25 @@ class TestBackwardsComatibility(SchemaTester):
     ###############
     # allowed
     ###############
-    def test_add_field_with_default(self):
-        assert self.is_compatible(base_schema, schema_add_field_with_default)
+    def test_add_optional_field(self):
+        assert self.is_compatible(base_schema, schema_add_optional_field)
 
-    def test_add_nullable_field_with_default(self):
-        assert self.is_compatible(base_schema, schema_add_nullable_field_with_default)
+    def test_delete_optional_field(self):
+        assert self.is_compatible(schema_add_optional_field, base_schema)
 
-    def test_delete_field_with_default(self):
-        assert self.is_compatible(schema_add_field_with_default, base_schema)
+    def test_delete_required_field(self):
+        assert self.is_compatible(schema_add_required_field, base_schema)
 
-    def test_delete_field_without_default(self):
-        assert self.is_compatible(schema_add_field_without_default, base_schema)
+    def test_make_required_field_optional(self):
+        assert self.is_compatible(schema_add_required_field, schema_add_optional_field)
 
-    def test_delete_nullable_field(self):
-        assert self.is_compatible(schema_add_nullable_field, base_schema)
+    def test_make_optional_field_required(self):
+        assert self.is_compatible(schema_add_optional_field, schema_add_required_field)
 
     def test_rename_field_with_alias(self):
         assert self.is_compatible(base_schema, schema_rename_field_with_alias)
 
-    def test_field_evolved_to_union(self):
+    def test_make_non_nullable_field_nullable(self):
         assert self.is_compatible(base_schema, schema_field_evolved_to_union)
 
     def test_add_type_to_union(self):
@@ -177,21 +140,18 @@ class TestBackwardsComatibility(SchemaTester):
             schema_field_evolved_to_union, schema_field_add_type_to_union
         )
 
-    ###############
+    # ###############
     # not allowed
-    ###############
-    def test_add_nullable_field(self):
-        assert self.not_compatible(base_schema, schema_add_nullable_field)
-
-    def test_add_field_without_default(self):
-        assert self.not_compatible(base_schema, schema_add_field_without_default)
+    # ###############
+    def test_add_required_field(self):
+        assert self.not_compatible(base_schema, schema_add_required_field)
 
     def test_remove_type_from_union(self):
         assert self.not_compatible(
             schema_field_add_type_to_union, schema_field_evolved_to_union
         )
 
-    def test_field_evolved_from_union(self):
+    def test_make_nullable_field_non_nullable(self):
         assert self.not_compatible(schema_field_evolved_to_union, base_schema)
 
 
@@ -211,33 +171,39 @@ class TestForwardsCompatibility(SchemaTester):
     ###############
     # allowed
     ###############
-    def test_add_field_with_default(self):
-        assert self.is_compatible(base_schema, schema_add_field_with_default)
+    def test_add_optional_field(self):
+        assert self.is_compatible(base_schema, schema_add_optional_field)
 
-    def test_add_field_without_default(self):
-        assert self.is_compatible(base_schema, schema_add_field_without_default)
+    def test_add_required_field(self):
+        assert self.is_compatible(base_schema, schema_add_required_field)
 
-    def test_delete_field_with_default(self):
-        assert self.is_compatible(schema_add_field_with_default, base_schema)
+    def test_delete_optional_field(self):
+        assert self.is_compatible(schema_add_optional_field, base_schema)
 
-    def test_field_evolved_from_union(self):
-        assert self.is_compatible(schema_field_evolved_to_union, base_schema)
+    def test_make_required_field_optional(self):
+        assert self.is_compatible(schema_add_required_field, schema_add_optional_field)
+
+    def test_make_optional_field_required(self):
+        assert self.is_compatible(schema_add_optional_field, schema_add_required_field)
 
     def test_remove_type_from_union(self):
         assert self.is_compatible(
             schema_field_add_type_to_union, schema_field_evolved_to_union
         )
 
-    ###############
+    def test_make_nullable_field_non_nullable(self):
+        assert self.is_compatible(schema_field_evolved_to_union, base_schema)
+
+    # ###############
     # not allowed
-    ###############
-    def test_delete_field_without_default(self):
-        assert self.not_compatible(schema_add_field_without_default, base_schema)
+    # ###############
+    def test_delete_required_field(self):
+        assert self.not_compatible(schema_add_required_field, base_schema)
 
     def test_rename_field_with_alias(self):
         assert self.not_compatible(base_schema, schema_rename_field_with_alias)
 
-    def test_field_evolved_to_union(self):
+    def test_make_non_nullable_field_nullable(self):
         assert self.not_compatible(base_schema, schema_field_evolved_to_union)
 
     def test_add_type_to_union(self):
@@ -258,36 +224,42 @@ class TestFullCompatibility(SchemaTester):
     ###############
     # allowed
     ###############
-    def test_add_field_with_default(self):
-        assert self.is_compatible(base_schema, schema_add_field_with_default)
+    def test_add_optional_field(self):
+        assert self.is_compatible(base_schema, schema_add_optional_field)
 
-    def test_delete_field_with_default(self):
-        assert self.is_compatible(schema_add_field_with_default, base_schema)
+    def test_delete_optional_field(self):
+        assert self.is_compatible(schema_add_optional_field, base_schema)
 
-    ###############
+    def test_make_required_field_optional(self):
+        assert self.is_compatible(schema_add_required_field, schema_add_optional_field)
+
+    def test_make_optional_field_required(self):
+        assert self.is_compatible(schema_add_optional_field, schema_add_required_field)
+
+    # ###############
     # not allowed
-    ###############
-    def test_add_field_without_default(self):
-        assert self.not_compatible(base_schema, schema_add_field_without_default)
+    # ###############
+    def test_delete_required_field(self):
+        assert self.not_compatible(schema_add_required_field, base_schema)
 
-    def test_delete_field_without_default(self):
-        assert self.not_compatible(schema_add_field_without_default, base_schema)
+    def test_add_required_field(self):
+        assert self.not_compatible(base_schema, schema_add_required_field)
 
     def test_rename_field_with_alias(self):
         assert self.not_compatible(base_schema, schema_rename_field_with_alias)
 
-    def test_field_evolved_to_union(self):
-        assert self.not_compatible(base_schema, schema_field_evolved_to_union)
+    def test_make_nullable_field_non_nullable(self):
+        assert self.not_compatible(schema_field_evolved_to_union, base_schema)
 
-    def test_remove_type_from_union(self):
-        assert self.not_compatible(
-            schema_field_add_type_to_union, schema_field_evolved_to_union
-        )
+    def test_make_non_nullable_field_nullable(self):
+        assert self.not_compatible(base_schema, schema_field_evolved_to_union)
 
     def test_add_type_to_union(self):
         assert self.not_compatible(
             schema_field_evolved_to_union, schema_field_add_type_to_union
         )
 
-    def test_field_evolved_from_union(self):
-        assert self.not_compatible(schema_field_evolved_to_union, base_schema)
+    def test_remove_type_from_union(self):
+        assert self.not_compatible(
+            schema_field_add_type_to_union, schema_field_evolved_to_union
+        )
