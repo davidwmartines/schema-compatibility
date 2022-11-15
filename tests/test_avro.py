@@ -99,10 +99,6 @@ schema_field_add_type_to_union = """
 
 
 class TestBackwardsComatibility(SchemaTester):
-    """
-    Backward compatibility: A new schema is backward compatible if it can be used to
-    read the data written in the previous schema.
-    """
 
     schema_type = "AVRO"
 
@@ -156,10 +152,6 @@ class TestBackwardsComatibility(SchemaTester):
 
 
 class TestForwardsCompatibility(SchemaTester):
-    """
-    Forward compatibility: A new schema is forward compatible if the previous schema can
-    read data written in this schema.
-    """
 
     schema_type = "AVRO"
 
