@@ -51,4 +51,6 @@ For each serialization format, for each compatibility mode, the preceding list o
 
 ## Report
 
-To summarize the findings, a markdown document showing an example of each type of schema change (in each serialization format) with an indication of the change's compliance with each compatibility mode's rules will be generated.
+To summarize the findings, a markdown document showing an example of each type of schema change (in each serialization format) with an indication of the change's compliance with each compatibility mode's rules is generated.
+
+**[View the report here](./report.md)**
