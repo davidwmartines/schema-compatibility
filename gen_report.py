@@ -1,7 +1,8 @@
 import sys
+from datetime import datetime
 from typing import Dict, List, NamedTuple
 
-from tests import test_avro
+from tests import test_avro, test_json, test_pbuf
 from tests.base import SchemaTester
 
 SchemaTester.setup_class()
@@ -34,12 +35,11 @@ class Transform(NamedTuple):
 
 
 class SerializationFormatReporter:
-
-    title: str = ""
-    schema_type: str = ""
-
-    _allowed_transforms: Dict[str, List] = {}
-    _not_allowed_transforms: Dict[str, List] = {}
+    def __init__(self, title: str, schema_type: str) -> None:
+        self._title = title
+        self._schema_type = schema_type
+        self._allowed_transforms: Dict[str, List] = {}
+        self._not_allowed_transforms: Dict[str, List] = {}
 
     _modes: list = [
         CompatMode(
@@ -67,7 +67,7 @@ class SerializationFormatReporter:
             self._allowed_transforms[mode.level] = []
             self._not_allowed_transforms[mode.level] = []
             tester = SchemaTester()
-            tester.schema_type = self.schema_type
+            tester.schema_type = self._schema_type
             tester.client.set_compatibility(level=mode.level)
             for transform in self.get_all_transforms():
                 if tester.is_compatible(transform.v1_str, transform.v2_str):
@@ -75,18 +75,47 @@ class SerializationFormatReporter:
                 else:
                     self._not_allowed_transforms[mode.level].append(transform)
 
-    def output_lines(self) -> list:
+    def summary(self) -> List[str]:
+        lines = []
+        lines.append(f'### [{self._title}](#{self._title.replace(" ", "_")})')
+        lines.append("")
+        for mode in self._modes:
+            lines.append(
+                f'[{mode.name}](#{self._title.replace(" ", "_")}_{mode.level.replace(" ", "_")})'
+            )
+            lines.append(f" - Allowed transformations")
+            lines.append("")
+            for transform in self._allowed_transforms[mode.level]:
+                lines.append(
+                    f'   - [{transform.name}](#{self._title.replace(" ", "_")}_{mode.level.replace(" ", "_")}_{transform.name.replace(" ", "_")})'
+                )
+                lines.append("")
+            lines.append(f" - Non-allowed transformations")
+            lines.append("")
+            for transform in self._not_allowed_transforms[mode.level]:
+                lines.append(
+                    f'   - [{transform.name}](#{self._title.replace(" ", "_")}_{mode.level.replace(" ", "_")}_{transform.name.replace(" ", "_")})'
+                )
+                lines.append("")
+
+        return lines
+
+    def details(self) -> List[str]:
         lines = []
 
-        lines.append(f"# {self.title}")
+        lines.append(f'# <a id="{self._title.replace(" ", "_")}"></a>{self._title}')
         lines.append("")
 
         for mode in self._modes:
-            lines.append(f"## {mode.name}")
+            lines.append(
+                f'## <a id="{self._title.replace(" ", "_")}_{mode.level.replace(" ", "_")}"></a>{mode.name}'
+            )
             lines.append(mode.description)
 
             for transform in self._allowed_transforms[mode.level]:
-                lines.append(f"### {transform.name}")
+                lines.append(
+                    f'### <a id="{self._title.replace(" ", "_")}_{mode.level.replace(" ", "_")}_{transform.name.replace(" ", "_")}"></a>{transform.name}'
+                )
                 lines.append("")
                 lines.append("V1")
                 lines.extend(transform.v1_lines())
@@ -96,14 +125,19 @@ class SerializationFormatReporter:
             lines.append("")
             lines.append(f"## Changes that break {(mode.name)}")
             lines.append("")
-            lines.append("")
-            for transform in self._not_allowed_transforms[mode.level]:
-                lines.append(f"### {transform.name} *(not permitted)*")
+            if len(self._not_allowed_transforms[mode.level]):
                 lines.append("")
-                lines.append("V1")
-                lines.extend(transform.v1_lines())
-                lines.append("V2")
-                lines.extend(transform.v2_lines())
+                for transform in self._not_allowed_transforms[mode.level]:
+                    lines.append(
+                        f'### <a id="{self._title.replace(" ", "_")}_{mode.level.replace(" ", "_")}_{transform.name.replace(" ", "_")}"></a>{transform.name} *(not permitted)*'
+                    )
+                    lines.append("")
+                    lines.append("V1")
+                    lines.extend(transform.v1_lines())
+                    lines.append("V2")
+                    lines.extend(transform.v2_lines())
+            else:
+                lines.append("*(none)*")
             lines.append("---")
 
         lines.append("")
@@ -112,9 +146,8 @@ class SerializationFormatReporter:
 
 
 class AvroReporter(SerializationFormatReporter):
-
-    title = "Avro"
-    schema_type = "AVRO"
+    def __init__(self) -> None:
+        super().__init__("Avro", "AVRO")
 
     def get_all_transforms(self) -> List[Transform]:
         return [
@@ -177,26 +210,59 @@ class AvroReporter(SerializationFormatReporter):
 
 
 class JsonReporter(SerializationFormatReporter):
-    title = "JSON Schema"
-    schema_type = "JSON"
+    def __init__(self) -> None:
+        super().__init__("JSON Schema", "JSON")
 
     def get_all_transforms(self) -> List[Transform]:
         return super().get_all_transforms()
 
 
 class PbufReporter(SerializationFormatReporter):
-    title = "Protocol Buffers"
-    schema_type = "PROTOBUF"
+    def __init__(self) -> None:
+        super().__init__("Protocol Buffers", "PROTOBUF")
 
     def get_all_transforms(self) -> List[Transform]:
-        return super().get_all_transforms()
+        return [
+            Transform(
+                "Add Field",
+                v1_str=test_pbuf.schema_base,
+                v2_str=test_pbuf.schema_add_field,
+                schema_lang="Protocol Buffer",
+            ),
+            Transform(
+                "Delete Field",
+                v1_str=test_pbuf.schema_add_field,
+                v2_str=test_pbuf.schema_base,
+                schema_lang="Protocol Buffer",
+            ),
+            Transform(
+                "Rename Field Number",
+                v1_str=test_pbuf.schema_base,
+                v2_str=test_pbuf.schema_rename_field,
+                schema_lang="Protocol Buffer",
+            ),
+        ]
 
 
 def generate_report():
+
+    reporters = [AvroReporter(), PbufReporter(), JsonReporter()]
+    for reporter in reporters:
+        reporter.test_transforms()
+
     with open("./report.md", "w") as f:
-        for reporter in [AvroReporter(), PbufReporter(), JsonReporter()]:
-            reporter.test_transforms()
-            for line in reporter.output_lines():
+        f.write("# Schema Evolution Compatibility\n")
+        f.write(f"Generated on {datetime.utcnow().isoformat()}\n")
+
+        f.write("## Summary\n")
+        for reporter in reporters:
+            for line in reporter.summary():
+                f.write(line)
+                f.write("\n")
+
+        f.write("## Details\n")
+        for reporter in reporters:
+            for line in reporter.details():
                 f.write(line)
                 f.write("\n")
 
