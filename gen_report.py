@@ -124,19 +124,54 @@ class AvroReporter(SerializationFormatReporter):
                 v2_str=test_avro.schema_add_optional_field,
             ),
             Transform(
-                name="Add required field",
-                v1_str=test_avro.base_schema,
-                v2_str=test_avro.schema_add_required_field,
-            ),
-            Transform(
                 name="Delete optional field",
                 v1_str=test_avro.schema_add_optional_field,
                 v2_str=test_avro.base_schema,
             ),
             Transform(
+                name="Add required field",
+                v1_str=test_avro.base_schema,
+                v2_str=test_avro.schema_add_required_field,
+            ),
+            Transform(
                 name="Delete required field",
                 v1_str=test_avro.schema_add_required_field,
                 v2_str=test_avro.base_schema,
+            ),
+            Transform(
+                name="Make required field optional",
+                v1_str=test_avro.schema_add_required_field,
+                v2_str=test_avro.schema_add_optional_field,
+            ),
+            Transform(
+                name="Make optional field required",
+                v1_str=test_avro.schema_add_optional_field,
+                v2_str=test_avro.schema_add_required_field,
+            ),
+            Transform(
+                name="Rename field with alias",
+                v1_str=test_avro.base_schema,
+                v2_str=test_avro.schema_rename_field_with_alias,
+            ),
+            Transform(
+                name="Make non-nullable field nullable",
+                v1_str=test_avro.base_schema,
+                v2_str=test_avro.schema_field_evolved_to_union,
+            ),
+            Transform(
+                name="Make nullable field non-nullable",
+                v1_str=test_avro.schema_field_evolved_to_union,
+                v2_str=test_avro.base_schema,
+            ),
+            Transform(
+                name="Add type to union",
+                v1_str=test_avro.schema_field_evolved_to_union,
+                v2_str=test_avro.schema_field_add_type_to_union,
+            ),
+            Transform(
+                name="Remove type from union",
+                v1_str=test_avro.schema_field_add_type_to_union,
+                v2_str=test_avro.schema_field_evolved_to_union,
             ),
         ]
 
