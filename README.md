@@ -4,9 +4,13 @@ Demonstrates various schema compatibility rules evaluated by the Confluent Schem
 
 Backwards, Forwards, and Full compatibility is tested using **Avro**, **JSON Schema**, and **Protocol Buffers** schemas.
 
-The compatibility types and their rules for schema changes are based on: https://docs.confluent.io/platform/current/schema-registry/avro.html#compatibility-types.
+The compatibility types and their rules for schema changes are based on:
+https://docs.confluent.io/platform/current/schema-registry/serdes-develop/index.html#compatibility-checks
 
-A test suite written in Python using `pytest` assertions is run, inspired by the [Confluent Avro Compatibility Test Suite](https://github.com/confluentinc/schema-registry/blob/master/core/src/test/java/io/confluent/kafka/schemaregistry/avro/AvroCompatibilityTest.java).
+Avro-specific:
+https://docs.confluent.io/platform/current/schema-registry/avro.html#compatibility-types.
+
+A test suite written in Python is included, inspired by the [Confluent Avro Compatibility Test Suite](https://github.com/confluentinc/schema-registry/blob/master/core/src/test/java/io/confluent/kafka/schemaregistry/avro/AvroCompatibilityTest.java).
 
 ## Purpose
 
