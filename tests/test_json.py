@@ -1,6 +1,5 @@
 from .base import SchemaTester
 
-
 schema_base = """
 {
   "type": "object",
@@ -139,7 +138,7 @@ class TestBackwardsComatibility_Closed(SchemaTester):
 
     def test_closed_add_optional_field_open(self):
         assert self.is_compatible(schema_closed_base, schema_add_optional_field)
-    
+
     def test_closed_make_field_optional(self):
         assert self.is_compatible(schema_closed_base, schema_closed_make_field_optional)
 
@@ -169,7 +168,6 @@ class TestBackwardsComatibility_Closed(SchemaTester):
             schema_closed_make_field_optional, schema_closed_base
         )
 
-   
 
 class TestForwardsCompatibility_Open(SchemaTester):
     """
@@ -192,14 +190,20 @@ class TestForwardsCompatibility_Open(SchemaTester):
     def test_open_add_required_field(self):
         assert self.is_compatible(schema_base, schema_add_required_field)
 
+    def test_open_add_optional_field_closed(self):
+        assert self.is_compatible(schema_base, schema_closed_add_optional_field)
+
     ###############
     # not allowed
     ###############
+    def test_open_delete_optional_field(self):
+        assert self.not_compatible(schema_add_optional_field, schema_base)
 
     def test_open_delete_required_field(self):
         assert self.not_compatible(schema_add_required_field, schema_base)
 
-
+    def test_open_add_required_field_closed(self):
+        assert self.not_compatible(schema_closed_base, schema_closed_add_required_field)
 
 
 class TestForwardsCompatibility_Closed(SchemaTester):
@@ -217,18 +221,37 @@ class TestForwardsCompatibility_Closed(SchemaTester):
     ###############
     # allowed
     ###############
-   
+    def test_closed_add_optional_field(self):
+        assert self.is_compatible(schema_closed_base, schema_closed_add_optional_field)
+
+    def test_closed_delete_optional_field(self):
+        assert self.is_compatible(schema_closed_add_optional_field, schema_closed_base)
+
     ###############
     # not allowed
     ###############
     def test_closed_add_required_field(self):
         assert self.not_compatible(schema_closed_base, schema_closed_add_required_field)
 
+    def test_closed_add_optional_field(self):
+        assert self.not_compatible(schema_closed_base, schema_closed_add_optional_field)
+
     def test_closed_add_optional_field_open(self):
         assert self.not_compatible(schema_closed_base, schema_add_optional_field)
 
     def test_closed_delete_required_field(self):
         assert self.not_compatible(schema_closed_add_required_field, schema_closed_base)
+
+    def test_closed_make_field_optional(self):
+        assert self.not_compatible(
+            schema_closed_base, schema_closed_make_field_optional
+        )
+
+    def test_closed_delete_optional_field_open(self):
+        assert self.not_compatible(schema_closed_add_optional_field, schema_base)
+
+    def test_closed_delete_required_field_open(self):
+        assert self.not_compatible(schema_closed_add_required_field, schema_base)
 
 
 class TestFullCompatibility_Open(SchemaTester):
@@ -258,7 +281,7 @@ class TestFullCompatibility_Open(SchemaTester):
     ###############
     # not allowed
     ###############
-   
+
     def test_open_add_required_field_closed(self):
         assert self.not_compatible(schema_closed_base, schema_closed_add_required_field)
 
