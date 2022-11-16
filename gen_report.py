@@ -214,7 +214,83 @@ class JsonReporter(SerializationFormatReporter):
         super().__init__("JSON Schema", "JSON")
 
     def get_all_transforms(self) -> List[Transform]:
-        return super().get_all_transforms()
+        return [
+            Transform(
+                "Delete optional field (open content model)",
+                v1_str=test_json.schema_add_optional_field,
+                v2_str=test_json.schema_base,
+            ),
+            Transform(
+                "Delete required field (open content model)",
+                v1_str=test_json.schema_add_required_field,
+                v2_str=test_json.schema_base,
+            ),
+            Transform(
+                "Add optional field (open content model)",
+                v1_str=test_json.schema_base,
+                v2_str=test_json.schema_add_optional_field,
+            ),
+            Transform(
+                "Add required field (open content model)",
+                v1_str=test_json.schema_base,
+                v2_str=test_json.schema_add_required_field,
+            ),
+            Transform(
+                "Add optional field (open to closed content model)",
+                v1_str=test_json.schema_base,
+                v2_str=test_json.schema_closed_add_optional_field,
+            ),
+            Transform(
+                "Add required field (open to closed content model)",
+                v1_str=test_json.schema_base,
+                v2_str=test_json.schema_closed_add_required_field,
+            ),
+            Transform(
+                "Add optional field (closed content model)",
+                v1_str=test_json.schema_closed_base,
+                v2_str=test_json.schema_closed_add_optional_field,
+            ),
+            Transform(
+                "Add optional field (closed to open content model)",
+                v1_str=test_json.schema_closed_base,
+                v2_str=test_json.schema_add_optional_field,
+            ),
+            Transform(
+                "Make required field optional (closed content model) ",
+                v1_str=test_json.schema_closed_base,
+                v2_str=test_json.schema_closed_make_field_optional,
+            ),
+            Transform(
+                "Delete optional field (closed to open content model)",
+                v1_str=test_json.schema_closed_add_optional_field,
+                v2_str=test_json.schema_base,
+            ),
+            Transform(
+                "Delete required field (closed to open content model)",
+                v1_str=test_json.schema_closed_add_required_field,
+                v2_str=test_json.schema_base,
+            ),
+            Transform(
+                "Delete optional field (closed content model)",
+                v1_str=test_json.schema_closed_add_optional_field,
+                v2_str=test_json.schema_closed_base,
+            ),
+            Transform(
+                "Delete required field (closed content model)",
+                v1_str=test_json.schema_closed_add_required_field,
+                v2_str=test_json.schema_closed_base,
+            ),
+            Transform(
+                "Add required field (closed content model)",
+                v1_str=test_json.schema_closed_base,
+                v2_str=test_json.schema_closed_add_required_field,
+            ),
+            Transform(
+                "Make optional field required (closed content model)",
+                v1_str=test_json.schema_closed_make_field_optional,
+                v2_str=test_json.schema_closed_base,
+            ),
+        ]
 
 
 class PbufReporter(SerializationFormatReporter):

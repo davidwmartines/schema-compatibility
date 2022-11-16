@@ -1,5 +1,5 @@
 # Schema Evolution Compatibility
-Generated on 2022-11-16T17:09:46.487607
+Generated on 2022-11-16T17:32:07.993486
 ## Summary
 ### [Avro](#Avro)
 
@@ -124,17 +124,107 @@ Generated on 2022-11-16T17:09:46.487607
 [Backwards Compatibility](#JSON_Schema_backward)
  - Allowed transformations
 
+   - [Delete optional field (open content model)](#JSON_Schema_backward_Delete_optional_field_(open_content_model))
+
+   - [Delete required field (open content model)](#JSON_Schema_backward_Delete_required_field_(open_content_model))
+
+   - [Add optional field (closed content model)](#JSON_Schema_backward_Add_optional_field_(closed_content_model))
+
+   - [Add optional field (closed to open content model)](#JSON_Schema_backward_Add_optional_field_(closed_to_open_content_model))
+
+   - [Make required field optional (closed content model) ](#JSON_Schema_backward_Make_required_field_optional_(closed_content_model)_)
+
+   - [Delete optional field (closed to open content model)](#JSON_Schema_backward_Delete_optional_field_(closed_to_open_content_model))
+
+   - [Delete required field (closed to open content model)](#JSON_Schema_backward_Delete_required_field_(closed_to_open_content_model))
+
  - Non-allowed transformations
+
+   - [Add optional field (open content model)](#JSON_Schema_backward_Add_optional_field_(open_content_model))
+
+   - [Add required field (open content model)](#JSON_Schema_backward_Add_required_field_(open_content_model))
+
+   - [Add optional field (open to closed content model)](#JSON_Schema_backward_Add_optional_field_(open_to_closed_content_model))
+
+   - [Add required field (open to closed content model)](#JSON_Schema_backward_Add_required_field_(open_to_closed_content_model))
+
+   - [Delete optional field (closed content model)](#JSON_Schema_backward_Delete_optional_field_(closed_content_model))
+
+   - [Delete required field (closed content model)](#JSON_Schema_backward_Delete_required_field_(closed_content_model))
+
+   - [Add required field (closed content model)](#JSON_Schema_backward_Add_required_field_(closed_content_model))
+
+   - [Make optional field required (closed content model)](#JSON_Schema_backward_Make_optional_field_required_(closed_content_model))
 
 [Forwards Compatibility](#JSON_Schema_forward)
  - Allowed transformations
 
+   - [Add optional field (open content model)](#JSON_Schema_forward_Add_optional_field_(open_content_model))
+
+   - [Add required field (open content model)](#JSON_Schema_forward_Add_required_field_(open_content_model))
+
+   - [Add optional field (open to closed content model)](#JSON_Schema_forward_Add_optional_field_(open_to_closed_content_model))
+
+   - [Add required field (open to closed content model)](#JSON_Schema_forward_Add_required_field_(open_to_closed_content_model))
+
+   - [Delete optional field (closed content model)](#JSON_Schema_forward_Delete_optional_field_(closed_content_model))
+
+   - [Make optional field required (closed content model)](#JSON_Schema_forward_Make_optional_field_required_(closed_content_model))
+
  - Non-allowed transformations
+
+   - [Delete optional field (open content model)](#JSON_Schema_forward_Delete_optional_field_(open_content_model))
+
+   - [Delete required field (open content model)](#JSON_Schema_forward_Delete_required_field_(open_content_model))
+
+   - [Add optional field (closed content model)](#JSON_Schema_forward_Add_optional_field_(closed_content_model))
+
+   - [Add optional field (closed to open content model)](#JSON_Schema_forward_Add_optional_field_(closed_to_open_content_model))
+
+   - [Make required field optional (closed content model) ](#JSON_Schema_forward_Make_required_field_optional_(closed_content_model)_)
+
+   - [Delete optional field (closed to open content model)](#JSON_Schema_forward_Delete_optional_field_(closed_to_open_content_model))
+
+   - [Delete required field (closed to open content model)](#JSON_Schema_forward_Delete_required_field_(closed_to_open_content_model))
+
+   - [Delete required field (closed content model)](#JSON_Schema_forward_Delete_required_field_(closed_content_model))
+
+   - [Add required field (closed content model)](#JSON_Schema_forward_Add_required_field_(closed_content_model))
 
 [Full Compatibility](#JSON_Schema_full)
  - Allowed transformations
 
  - Non-allowed transformations
+
+   - [Delete optional field (open content model)](#JSON_Schema_full_Delete_optional_field_(open_content_model))
+
+   - [Delete required field (open content model)](#JSON_Schema_full_Delete_required_field_(open_content_model))
+
+   - [Add optional field (open content model)](#JSON_Schema_full_Add_optional_field_(open_content_model))
+
+   - [Add required field (open content model)](#JSON_Schema_full_Add_required_field_(open_content_model))
+
+   - [Add optional field (open to closed content model)](#JSON_Schema_full_Add_optional_field_(open_to_closed_content_model))
+
+   - [Add required field (open to closed content model)](#JSON_Schema_full_Add_required_field_(open_to_closed_content_model))
+
+   - [Add optional field (closed content model)](#JSON_Schema_full_Add_optional_field_(closed_content_model))
+
+   - [Add optional field (closed to open content model)](#JSON_Schema_full_Add_optional_field_(closed_to_open_content_model))
+
+   - [Make required field optional (closed content model) ](#JSON_Schema_full_Make_required_field_optional_(closed_content_model)_)
+
+   - [Delete optional field (closed to open content model)](#JSON_Schema_full_Delete_optional_field_(closed_to_open_content_model))
+
+   - [Delete required field (closed to open content model)](#JSON_Schema_full_Delete_required_field_(closed_to_open_content_model))
+
+   - [Delete optional field (closed content model)](#JSON_Schema_full_Delete_optional_field_(closed_content_model))
+
+   - [Delete required field (closed content model)](#JSON_Schema_full_Delete_required_field_(closed_content_model))
+
+   - [Add required field (closed content model)](#JSON_Schema_full_Add_required_field_(closed_content_model))
+
+   - [Make optional field required (closed content model)](#JSON_Schema_full_Make_optional_field_required_(closed_content_model))
 
 ## Details
 # <a id="Avro"></a>Avro
@@ -1440,23 +1530,1103 @@ message Example {
 
 ## <a id="JSON_Schema_backward"></a>Backwards Compatibility
 A new schema is backward compatible if it can be used to read the data written in the previous schema.
+### <a id="JSON_Schema_backward_Delete_optional_field_(open_content_model)"></a>Delete optional field (open content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+### <a id="JSON_Schema_backward_Delete_required_field_(open_content_model)"></a>Delete required field (open content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1", "f2"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+### <a id="JSON_Schema_backward_Add_optional_field_(closed_content_model)"></a>Add optional field (closed content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_backward_Add_optional_field_(closed_to_open_content_model)"></a>Add optional field (closed to open content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_backward_Make_required_field_optional_(closed_content_model)_"></a>Make required field optional (closed content model) 
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": []
+}
+```
+### <a id="JSON_Schema_backward_Delete_optional_field_(closed_to_open_content_model)"></a>Delete optional field (closed to open content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+### <a id="JSON_Schema_backward_Delete_required_field_(closed_to_open_content_model)"></a>Delete required field (closed to open content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
 
 ## Changes that break Backwards Compatibility
 
-*(none)*
+
+### <a id="JSON_Schema_backward_Add_optional_field_(open_content_model)"></a>Add optional field (open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_backward_Add_required_field_(open_content_model)"></a>Add required field (open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1", "f2"]
+}
+```
+### <a id="JSON_Schema_backward_Add_optional_field_(open_to_closed_content_model)"></a>Add optional field (open to closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_backward_Add_required_field_(open_to_closed_content_model)"></a>Add required field (open to closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
+### <a id="JSON_Schema_backward_Delete_optional_field_(closed_content_model)"></a>Delete optional field (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_backward_Delete_required_field_(closed_content_model)"></a>Delete required field (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_backward_Add_required_field_(closed_content_model)"></a>Add required field (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
+### <a id="JSON_Schema_backward_Make_optional_field_required_(closed_content_model)"></a>Make optional field required (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": []
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
 ---
 ## <a id="JSON_Schema_forward"></a>Forwards Compatibility
 A new schema is forward compatible if the previous schema can read data written in this schema.
+### <a id="JSON_Schema_forward_Add_optional_field_(open_content_model)"></a>Add optional field (open content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_forward_Add_required_field_(open_content_model)"></a>Add required field (open content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1", "f2"]
+}
+```
+### <a id="JSON_Schema_forward_Add_optional_field_(open_to_closed_content_model)"></a>Add optional field (open to closed content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_forward_Add_required_field_(open_to_closed_content_model)"></a>Add required field (open to closed content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
+### <a id="JSON_Schema_forward_Delete_optional_field_(closed_content_model)"></a>Delete optional field (closed content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_forward_Make_optional_field_required_(closed_content_model)"></a>Make optional field required (closed content model)
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": []
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
 
 ## Changes that break Forwards Compatibility
 
-*(none)*
+
+### <a id="JSON_Schema_forward_Delete_optional_field_(open_content_model)"></a>Delete optional field (open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+### <a id="JSON_Schema_forward_Delete_required_field_(open_content_model)"></a>Delete required field (open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1", "f2"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+### <a id="JSON_Schema_forward_Add_optional_field_(closed_content_model)"></a>Add optional field (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_forward_Add_optional_field_(closed_to_open_content_model)"></a>Add optional field (closed to open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_forward_Make_required_field_optional_(closed_content_model)_"></a>Make required field optional (closed content model)  *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": []
+}
+```
+### <a id="JSON_Schema_forward_Delete_optional_field_(closed_to_open_content_model)"></a>Delete optional field (closed to open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+### <a id="JSON_Schema_forward_Delete_required_field_(closed_to_open_content_model)"></a>Delete required field (closed to open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+### <a id="JSON_Schema_forward_Delete_required_field_(closed_content_model)"></a>Delete required field (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_forward_Add_required_field_(closed_content_model)"></a>Add required field (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
 ---
 ## <a id="JSON_Schema_full"></a>Full Compatibility
 A new schema is fully compatible if it's both backward and forward compatible.
 
 ## Changes that break Full Compatibility
 
-*(none)*
+
+### <a id="JSON_Schema_full_Delete_optional_field_(open_content_model)"></a>Delete optional field (open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+### <a id="JSON_Schema_full_Delete_required_field_(open_content_model)"></a>Delete required field (open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1", "f2"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+### <a id="JSON_Schema_full_Add_optional_field_(open_content_model)"></a>Add optional field (open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_full_Add_required_field_(open_content_model)"></a>Add required field (open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1", "f2"]
+}
+```
+### <a id="JSON_Schema_full_Add_optional_field_(open_to_closed_content_model)"></a>Add optional field (open to closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_full_Add_required_field_(open_to_closed_content_model)"></a>Add required field (open to closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
+### <a id="JSON_Schema_full_Add_optional_field_(closed_content_model)"></a>Add optional field (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_full_Add_optional_field_(closed_to_open_content_model)"></a>Add optional field (closed to open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_full_Make_required_field_optional_(closed_content_model)_"></a>Make required field optional (closed content model)  *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": []
+}
+```
+### <a id="JSON_Schema_full_Delete_optional_field_(closed_to_open_content_model)"></a>Delete optional field (closed to open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+### <a id="JSON_Schema_full_Delete_required_field_(closed_to_open_content_model)"></a>Delete required field (closed to open content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+"required": ["f1"]
+}
+```
+### <a id="JSON_Schema_full_Delete_optional_field_(closed_content_model)"></a>Delete optional field (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_full_Delete_required_field_(closed_content_model)"></a>Delete required field (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+### <a id="JSON_Schema_full_Add_required_field_(closed_content_model)"></a>Add required field (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"},
+    "f2": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1", "f2"]
+}
+```
+### <a id="JSON_Schema_full_Make_optional_field_required_(closed_content_model)"></a>Make optional field required (closed content model) *(not permitted)*
+
+V1
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": []
+}
+```
+V2
+```json
+{
+  "type": "object",
+  "properties": {
+    "f1": {"type": "string"}
+  },
+  "additionalProperties": false,
+  "required": ["f1"]
+}
+```
 ---
 
